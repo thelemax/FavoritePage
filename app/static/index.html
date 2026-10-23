@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liens favoris</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<form class="search" id="searchForm" action="https://www.google.com/search" method="get" role="search">
+  <a class="search-icon" href="https://lens.google.com/" title="Rechercher par image">
+    <svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>
+  </a>
+  <input type="text" name="q" id="searchInput" placeholder="Demander à Google" autocomplete="off" aria-label="Demander à Google">
+  <button type="button" class="search-icon" id="voiceBtn" title="Recherche vocale">
+    <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11z"/></svg>
+  </button>
+  <a class="search-icon" href="https://lens.google.com/" title="Rechercher avec Google Lens">
+    <svg viewBox="0 0 24 24"><path d="M6 4h3v2H6v3H4V6a2 2 0 0 1 2-2zm9 0h3a2 2 0 0 1 2 2v3h-2V6h-3zM4 15h2v3h3v2H6a2 2 0 0 1-2-2zm14 0h2v3a2 2 0 0 1-2 2h-3v-2h3zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm5.5-1.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
+  </a>
+  <button type="button" class="search-ai" id="aiBtn" title="Mode IA">
+    <svg viewBox="0 0 24 24"><path d="M10 4a6 6 0 0 1 4.74 9.68l5.29 5.3-1.42 1.41-5.29-5.29A6 6 0 1 1 10 4zm0 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm8-4 .9 2.1L21 5l-2.1.9L18 8l-.9-2.1L15 5l2.1-.9z"/></svg>
+    Mode IA
+  </button>
+</form>
+
+<main class="board" id="board"></main>
+
+<div class="tooltip" id="tooltip"><div class="tt-desc"></div><div class="tt-url"></div></div>
+
+<div class="fab-bar">
+  <button class="fab" id="themeBtn" title="Thème">🎨</button>
+  <button class="fab" id="editBtn" title="Mode édition">✎</button>
+</div>
+
+<!-- Modale lien -->
+<div class="overlay" id="linkModal">
+  <form class="modal" id="linkForm">
+    <h2 id="linkModalTitle">Modifier le lien</h2>
+    <label for="linkName">Nom</label>
+    <input type="text" id="linkName" required>
+    <label for="linkUrl">URL</label>
+    <input type="text" id="linkUrl">
+    <label for="linkDesc">Description</label>
+    <textarea id="linkDesc"></textarea>
+    <label class="check"><input type="checkbox" id="linkHidden"> Masqué</label>
+
+    <details class="appearance" id="linkAppearance">
+      <summary>Apparence (surcharge du thème)</summary>
+      <label for="lsIcon">Icône</label>
+      <input type="text" id="lsIcon" placeholder="Vide = favicon automatique · URL ou fichier de config/icons">
+      <div class="grid3">
+        <div><label for="lsShowIcon">Icône</label>
+          <select id="lsShowIcon"><option value="">Thème</option><option value="1">Afficher</option><option value="0">Masquer</option></select></div>
+        <div><label for="lsShowName">Nom</label>
+          <select id="lsShowName"><option value="">Thème</option><option value="1">Afficher</option><option value="0">Masquer</option></select></div>
+        <div><label for="lsShowDesc">Description</label>
+          <select id="lsShowDesc"><option value="">Thème</option><option value="1">Afficher</option><option value="0">Masquer</option></select></div>
+      </div>
+      <div class="grid3">
+        <div><label for="lsWidth">Largeur (px)</label>
+          <input type="number" id="lsWidth" min="0" max="600" placeholder="Thème · 0 = auto"></div>
+        <div><label for="lsIconSize">Taille icône (px)</label>
+          <input type="number" id="lsIconSize" min="10" max="64" placeholder="Thème"></div>
+        <div><label for="lsFontSize">Taille police (px)</label>
+          <input type="number" id="lsFontSize" min="8" max="32" placeholder="Thème"></div>
+      </div>
+      <div class="grid2">
+        <div><label class="check"><input type="checkbox" id="lsColorOn"> Fond</label>
+          <input type="color" id="lsColor" value="#1c1e22"></div>
+        <div><label class="check"><input type="checkbox" id="lsTextOn"> Texte</label>
+          <input type="color" id="lsText" value="#f2f2f2"></div>
+      </div>
+    </details>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-delete" id="linkDelete">Supprimer</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-cancel" data-close>Annuler</button>
+      <button type="submit" class="btn btn-save">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<!-- Modale thème -->
+<div class="overlay" id="themeModal">
+  <form class="modal modal-wide" id="themeForm">
+    <h2>Thème</h2>
+
+    <fieldset>
+      <legend>Disposition</legend>
+      <div class="grid2">
+        <div><label for="thColumns">Colonnes</label>
+          <input type="number" id="thColumns" min="1" max="6" required></div>
+        <div><label class="check"><input type="checkbox" id="thWidthOn"> Largeur fixe des liens (px)</label>
+          <input type="number" id="thWidth" min="40" max="600" value="160"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Liens</legend>
+      <div class="grid3">
+        <label class="check"><input type="checkbox" id="thShowIcon"> Icône</label>
+        <label class="check"><input type="checkbox" id="thShowName"> Nom</label>
+        <label class="check"><input type="checkbox" id="thShowDesc"> Description</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Tailles</legend>
+      <div class="grid2">
+        <div><label for="thIconSize">Icône <output id="thIconSizeOut"></output></label>
+          <input type="range" id="thIconSize" min="10" max="64"></div>
+        <div><label for="thFontLink">Police des liens <output id="thFontLinkOut"></output></label>
+          <input type="range" id="thFontLink" min="8" max="32"></div>
+        <div><label for="thFontDesc">Police des descriptions <output id="thFontDescOut"></output></label>
+          <input type="range" id="thFontDesc" min="8" max="32"></div>
+        <div><label for="thFontCat">Titres des catégories <output id="thFontCatOut"></output></label>
+          <input type="range" id="thFontCat" min="8" max="40"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Couleurs</legend>
+      <div class="grid3">
+        <div><label for="thButton">Boutons</label><input type="color" id="thButton"></div>
+        <div><label for="thButtonHover">Survol</label><input type="color" id="thButtonHover"></div>
+        <div><label for="thText">Texte</label><input type="color" id="thText"></div>
+      </div>
+      <label for="thButtonOpacity">Opacité des boutons <output id="thButtonOpacityOut"></output></label>
+      <input type="range" id="thButtonOpacity" min="0" max="100">
+      <div class="grid2">
+        <div><label for="thPanel">Fond des catégories</label><input type="color" id="thPanel"></div>
+        <div><label for="thPanelOpacity">Opacité <output id="thPanelOpacityOut"></output></label>
+          <input type="range" id="thPanelOpacity" min="0" max="100"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Image de fond</legend>
+      <div class="grid2">
+        <div><label for="thBgMode">Mode</label>
+          <select id="thBgMode"><option value="fixed">Fixe</option><option value="random">Aléatoire (config/fonds)</option></select></div>
+        <div><label for="thBgAttach">Défilement</label>
+          <select id="thBgAttach"><option value="fixed">Fond fixe</option><option value="scroll">Défile avec la page</option></select></div>
+      </div>
+      <div id="thBgFixed">
+        <label for="thBgSelect">Image</label>
+        <select id="thBgSelect"></select>
+        <input type="text" id="thBgUrl" placeholder="https://…">
+      </div>
+      <p class="hint" id="thBgHint"></p>
+    </fieldset>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-cancel" id="themeReset" title="Revenir aux valeurs par défaut">Défauts</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-cancel" data-close>Annuler</button>
+      <button type="submit" class="btn btn-save">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<!-- Modale catégorie -->
+<div class="overlay" id="catModal">
+  <form class="modal" id="catForm">
+    <h2 id="catModalTitle">Nouvelle catégorie</h2>
+    <label for="catName">Nom</label>
+    <input type="text" id="catName" required>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-delete" id="catDelete">Supprimer</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-cancel" data-close>Annuler</button>
+      <button type="submit" class="btn btn-save">Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
+

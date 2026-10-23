@@ -1,0 +1,22 @@
+columns: 3
+link:
+  width: 198
+  show_icon: true
+  show_name: true
+  show_description: false
+  icon_size: 30
+colors:
+  button: '#1c1e22'
+  button_hover: '#464a50'
+  text: '#f2f2f2'
+  button_opacity: 0.52
+  panel: '#14181e'
+  panel_opacity: 0.0
+background:
+  mode: random
+  image: https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3w5MTMyMXwwfDF8c2VhcmNofDJ8fGJlYWNoJTIwbGFuZHNjYXBlfGVufDB8fHx8MTY5Mzc1NzQyNw&auto=format&fit=crop&w=1920&q=60
+  attachment: fixed
+fonts:
+  link: 16
+  description: 14
+  category: 24

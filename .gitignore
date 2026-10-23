@@ -1,0 +1,11 @@
+.venv/
+venv/
+.idea/
+__pycache__/
+*.pyc
+.env
+config/.data-*.tmp
+config/.*.tmp
+config/cache/
+config/data.yaml
+doc/

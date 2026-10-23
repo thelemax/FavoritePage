@@ -1,0 +1,12 @@
+services:
+  favoritepage:
+    build: .
+    image: favoritepage:latest
+    container_name: favoritepage
+    user: "${PUID:-1000}:${PGID:-1000}"
+    ports:
+      - "${PORT:-8000}:8000"
+    volumes:
+      - ${CONFIG_DIR:-./config}:/config
+    restart: unless-stopped
+
